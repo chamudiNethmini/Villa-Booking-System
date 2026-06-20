@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Footer() {
   return (
     <footer className="footer">
@@ -5,17 +7,18 @@ function Footer() {
         <div>
           <h2>CoastalStay Villa</h2>
           <p>
-            A simple and peaceful villa stay near the beach, designed for
-            comfort, relaxation, and memorable holidays.
+            A serene beachside villa offering comfort, warmth, and a truly
+            relaxing holiday experience just moments from the shore.
           </p>
         </div>
 
         <div>
           <h3>Quick Links</h3>
-          <p>Home</p>
-          <p>Facilities</p>
-          <p>Gallery</p>
-          <p>Contact</p>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+          <Link to="/facilities">Facilities</Link>
+          <Link to="/gallery">Gallery</Link>
+          <Link to="/contact">Contact</Link>
         </div>
 
         <div>

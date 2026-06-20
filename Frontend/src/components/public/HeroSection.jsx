@@ -6,23 +6,23 @@ function HeroSection() {
     <section
       className="hero"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url(${villaImages.hero})`,
+        backgroundImage: `linear-gradient(rgba(61, 54, 48, 0.42), rgba(61, 54, 48, 0.55)), url(${villaImages.hero})`,
       }}
     >
       <div className="hero-content">
-        <span className="hero-tag">Beachside Comfort Villa</span>
-        <h1>Enjoy a Peaceful Stay Near the Beach</h1>
+        <span className="hero-tag">Beachside Retreat</span>
+        <h1>Your Peaceful Escape by the Shore</h1>
         <p>
-          A clean, relaxing, and budget-friendly villa experience designed for
-          local and foreign travelers.
+          Unwind in our warm, welcoming villa — steps from the beach, designed
+          for comfort, relaxation, and unforgettable coastal holidays.
         </p>
 
         <div className="hero-buttons">
           <Link to="/book-now" className="primary-btn">
-            Book Now
+            Book Your Stay
           </Link>
           <Link to="/gallery" className="secondary-btn">
-            View Gallery
+            Explore Gallery
           </Link>
         </div>
       </div>
