@@ -214,7 +214,7 @@ img {
 
 .page-hero {
   background: linear-gradient(135deg, var(--beige-warm), var(--secondary));
-  padding: 72px 0 64px;
+  padding: 140px 0 72px;
   text-align: center;
   border-bottom: 1px solid var(--border);
 }
@@ -422,24 +422,56 @@ img {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   border: 1px solid var(--border);
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
 }
 
 .facility-card:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow);
+  border-color: var(--sand);
 }
 
 .facility-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--secondary);
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--secondary), var(--beige-warm));
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.facility-icon-svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--primary-dark);
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s;
+}
+
+.facility-icon-fill {
+  fill: var(--primary-dark);
+  stroke: none;
+  transition: fill 0.3s;
+}
+
+.facility-card:hover .facility-icon {
+  background: linear-gradient(145deg, var(--primary), var(--primary-dark));
+  border-color: var(--primary-dark);
+}
+
+.facility-card:hover .facility-icon-svg {
+  stroke: var(--white);
+}
+
+.facility-card:hover .facility-icon-fill {
+  fill: var(--white);
 }
 
 .facility-card h3 {
@@ -675,34 +707,44 @@ img {
 /* ── WhatsApp Floating Button ── */
 
 .whatsapp-btn {
-  position: fixed;
-  right: 28px;
-  bottom: 28px;
-  z-index: 9999;
-  width: 56px;
-  height: 56px;
-  padding: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 8px 24px rgba(61, 54, 48, 0.18);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: fixed !important;
+  right: 28px !important;
+  bottom: 28px !important;
+  z-index: 9999 !important;
+
+  width: 58px !important;
+  height: 58px !important;
+  padding: 0 !important;
+
+  border-radius: 50% !important;
+  background: #a8b98c !important;
+  color: #ffffff !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  text-decoration: none !important;
+  overflow: hidden !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.65) !important;
+  box-shadow: 0 10px 28px rgba(60, 72, 48, 0.28) !important;
+
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 .whatsapp-btn:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 12px 32px rgba(61, 54, 48, 0.24);
+  background: #96aa79 !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 14px 34px rgba(60, 72, 48, 0.34) !important;
 }
 
-.whatsapp-icon {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.whatsapp-svg {
+  width: 32px !important;
+  height: 32px !important;
+  color: #ffffff !important;
+  display: block !important;
+  flex-shrink: 0 !important;
 }
 /* ── Footer ── */
 
@@ -814,7 +856,7 @@ img {
   }
 
   .page-hero {
-    padding: 56px 0 48px;
+    padding: 120px 0 64px;
   }
 
   .hero {
@@ -842,5 +884,6 @@ img {
   .about-image-box img {
     height: 300px;
   }
+
 
 }

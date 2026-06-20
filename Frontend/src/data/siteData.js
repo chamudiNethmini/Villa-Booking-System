@@ -7,32 +7,32 @@ export const facilities = [
   {
     title: "Free Wi-Fi",
     description: "High-speed internet access for guests throughout the villa.",
-    icon: "📶",
+    icon: "wifi",
   },
   {
     title: "Private Rooms",
     description: "Comfortable private rooms with modern interior design.",
-    icon: "🛏️",
+    icon: "bed",
   },
   {
     title: "Kitchen Access",
     description: "A fully equipped kitchen available for guest use.",
-    icon: "🍽️",
+    icon: "kitchen",
   },
   {
     title: "Beach Nearby",
     description: "Only a short walking distance from the beach area.",
-    icon: "🏖️",
+    icon: "beach",
   },
   {
     title: "Parking Space",
     description: "Safe and convenient parking facilities for guests.",
-    icon: "🚗",
+    icon: "parking",
   },
   {
     title: "Relaxing Environment",
     description: "Peaceful surroundings suitable for families and tourists.",
-    icon: "🌿",
+    icon: "relax",
   },
 ];
 
