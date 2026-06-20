@@ -1,26 +1,26 @@
+import PageHero from "../../components/public/PageHero";
 import FacilityCard from "../../components/public/FacilityCard";
 import { facilities } from "../../data/siteData";
 
 function Facilities() {
   return (
-    <section className="section page-section light-section">
-      <div className="section-container">
-        <div className="section-heading">
-          <span className="section-label">Facilities</span>
-          <h1>Villa facilities for a relaxed stay</h1>
-          <p>
-            We provide simple and useful facilities to make your stay
-            comfortable and enjoyable.
-          </p>
-        </div>
+    <>
+      <PageHero
+        label="Facilities"
+        title="Amenities for a relaxed coastal stay"
+        description="We provide thoughtful, practical facilities to make your villa holiday comfortable and truly enjoyable."
+      />
 
-        <div className="facility-grid">
-          {facilities.map((facility, index) => (
-            <FacilityCard key={index} facility={facility} />
-          ))}
+      <section className="section page-section light-section">
+        <div className="section-container">
+          <div className="facility-grid">
+            {facilities.map((facility, index) => (
+              <FacilityCard key={index} facility={facility} />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 

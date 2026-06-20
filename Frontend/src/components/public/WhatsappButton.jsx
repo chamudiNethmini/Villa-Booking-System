@@ -1,3 +1,5 @@
+import whatsappIcon from "../../assets/images/whatsapp-icon.png";
+
 function WhatsAppButton() {
   const phoneNumber = "94725901592";
   const message = "Hello, I would like to know more about the villa booking.";
@@ -12,8 +14,15 @@ function WhatsAppButton() {
       className="whatsapp-btn"
       target="_blank"
       rel="noreferrer"
+      aria-label="Chat on WhatsApp"
+      title="Chat on WhatsApp"
     >
-      WhatsApp
+      <img
+        src={whatsappIcon}
+        alt=""
+        className="whatsapp-icon"
+        aria-hidden="true"
+      />
     </a>
   );
 }

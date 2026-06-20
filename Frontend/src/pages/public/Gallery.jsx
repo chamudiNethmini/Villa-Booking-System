@@ -1,26 +1,26 @@
+import PageHero from "../../components/public/PageHero";
 import GalleryCard from "../../components/public/GalleryCard";
 import { galleryImages } from "../../data/siteData";
 
 function Gallery() {
   return (
-    <section className="section page-section">
-      <div className="section-container">
-        <div className="section-heading">
-          <span className="section-label">Gallery</span>
-          <h1>Take a look inside our villa</h1>
-          <p>
-            Explore our rooms, living spaces, bathroom, dining area, and relaxing
-            villa environment.
-          </p>
-        </div>
+    <>
+      <PageHero
+        label="Gallery"
+        title="Take a look inside our villa"
+        description="Explore our rooms, living spaces, bathroom, dining area, and the relaxing coastal environment that awaits you."
+      />
 
-        <div className="gallery-grid">
-          {galleryImages.map((item, index) => (
-            <GalleryCard key={index} item={item} />
-          ))}
+      <section className="section page-section">
+        <div className="section-container">
+          <div className="gallery-grid">
+            {galleryImages.map((item, index) => (
+              <GalleryCard key={index} item={item} />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
