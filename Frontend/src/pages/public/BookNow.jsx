@@ -1,19 +1,22 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import PageHero from "../../components/public/PageHero";
 import BookingForm from "../../components/bookings/BookingForm";
-import { addBooking, saveCustomerEmail } from "../../services/bookingService";
+import { addBooking } from "../../services/bookingService";
 
 function BookNow() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedRoomId = searchParams.get("roomId") || "";
 
-  const handleBookingSubmit = (bookingData) => {
-    addBooking(bookingData);
-    saveCustomerEmail(bookingData.email);
-    navigate(
-      `/my-bookings?email=${encodeURIComponent(bookingData.email)}`
-    );
+  const handleBookingSubmit = async (bookingData) => {
+    try {
+      const newBooking = await addBooking(bookingData);
+
+      alert(
+        `Booking request submitted successfully.\nYour Booking ID is: ${newBooking.id}\nYou can check the status in My Bookings.`
+      );
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -45,11 +48,6 @@ function BookNow() {
                 <div>
                   <span>03</span>
                   <p>Villa owner confirms availability.</p>
-                </div>
-
-                <div>
-                  <span>04</span>
-                  <p>Track your status anytime in My Bookings.</p>
                 </div>
               </div>
 

@@ -16,65 +16,33 @@ function AdminDashboard() {
   });
 
   useEffect(() => {
-    setStats(getDashboardStats());
+    const loadStats = async () => {
+      const data = await getDashboardStats();
+      setStats(data);
+    };
+
+    loadStats();
   }, []);
 
   return (
     <section className="admin-dashboard-page">
       <div className="admin-dashboard-heading">
-        <span className="section-label">Overview</span>
-        <h1>Welcome back</h1>
+        <span className="section-label">Dashboard</span>
+        <h1>Villa Management Overview</h1>
         <p>
           Monitor rooms, availability, booking requests, and recent customer
-          activity from one place.
+          activity.
         </p>
       </div>
 
-      <div className="admin-dashboard-section">
-        <h2 className="admin-dashboard-section-title">Room overview</h2>
-        <div className="dashboard-card-grid dashboard-card-grid--3">
-          <DashboardCard
-            title="Total Rooms"
-            value={stats.totalRooms}
-            type="rooms"
-          />
-          <DashboardCard
-            title="Available Rooms"
-            value={stats.availableRooms}
-            type="available"
-          />
-          <DashboardCard
-            title="Unavailable Rooms"
-            value={stats.unavailableRooms}
-            type="unavailable"
-          />
-        </div>
-      </div>
-
-      <div className="admin-dashboard-section">
-        <h2 className="admin-dashboard-section-title">Booking overview</h2>
-        <div className="dashboard-card-grid dashboard-card-grid--4">
-          <DashboardCard
-            title="Total Bookings"
-            value={stats.totalBookings}
-            type="bookings"
-          />
-          <DashboardCard
-            title="Pending"
-            value={stats.pendingBookings}
-            type="pending"
-          />
-          <DashboardCard
-            title="Confirmed"
-            value={stats.confirmedBookings}
-            type="confirmed"
-          />
-          <DashboardCard
-            title="Cancelled"
-            value={stats.cancelledBookings}
-            type="cancelled"
-          />
-        </div>
+      <div className="dashboard-card-grid">
+        <DashboardCard title="Total Rooms" value={stats.totalRooms} icon="🏠" />
+        <DashboardCard title="Available Rooms" value={stats.availableRooms} icon="✅" />
+        <DashboardCard title="Unavailable Rooms" value={stats.unavailableRooms} icon="🚫" />
+        <DashboardCard title="Total Bookings" value={stats.totalBookings} icon="📅" />
+        <DashboardCard title="Pending Bookings" value={stats.pendingBookings} icon="⏳" />
+        <DashboardCard title="Confirmed Bookings" value={stats.confirmedBookings} icon="🎉" />
+        <DashboardCard title="Cancelled Bookings" value={stats.cancelledBookings} icon="❌" />
       </div>
 
       <RecentBookings bookings={stats.recentBookings} />

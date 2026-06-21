@@ -1,158 +1,118 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import PageHero from "../../components/public/PageHero";
-import MyBookingsTable from "../../components/bookings/MyBookingsTable";
-import {
-  getBookingsByEmail,
-  getCustomerEmail,
-  saveCustomerEmail,
-} from "../../services/bookingService";
+import BookingStatusBadge from "../../components/bookings/BookingStatusBadge";
+import { getCustomerBookings } from "../../services/bookingService";
 
 function MyBookings() {
-  const [searchParams] = useSearchParams();
-  const [email, setEmail] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [bookings, setBookings] = useState([]);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [searched, setSearched] = useState(false);
 
-  const loadBookings = useCallback((lookupEmail) => {
-    const trimmed = lookupEmail.trim();
+  const handleSearch = async (e) => {
+    e.preventDefault();
 
-    if (!trimmed) {
-      setBookings([]);
-      setHasSearched(false);
+    if (!searchValue.trim()) {
+      alert("Please enter your email, phone number, or booking ID");
       return;
     }
 
-    saveCustomerEmail(trimmed);
-    setBookings(getBookingsByEmail(trimmed));
-    setHasSearched(true);
-  }, []);
-
-  useEffect(() => {
-    const emailFromUrl = searchParams.get("email");
-    const savedEmail = getCustomerEmail();
-    const initialEmail = emailFromUrl || savedEmail;
-
-    if (initialEmail) {
-      setEmail(initialEmail);
-      loadBookings(initialEmail);
+    try {
+      const result = await getCustomerBookings(searchValue);
+      setBookings(result);
+      setSearched(true);
+    } catch (error) {
+      alert(error.message);
     }
-  }, [searchParams, loadBookings]);
-
-  useEffect(() => {
-    const handleStorageChange = (event) => {
-      if (event.key === "villa_bookings" && email) {
-        loadBookings(email);
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible" && email) {
-        loadBookings(email);
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [email, loadBookings]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    loadBookings(email);
   };
-
-  const handleRefresh = () => {
-    if (email) loadBookings(email);
-  };
-
-  const pendingCount = bookings.filter((b) => b.status === "Pending").length;
-  const confirmedCount = bookings.filter((b) => b.status === "Confirmed").length;
-  const cancelledCount = bookings.filter((b) => b.status === "Cancelled").length;
 
   return (
     <>
       <PageHero
         label="My Bookings"
-        title="Track your booking requests"
-        description="Enter the email you used when booking to see your request status. Updates from the villa team appear here automatically."
+        title="Check your booking status"
+        description="Enter your email, phone number, or booking ID to view your villa booking request status."
       />
 
       <section className="section my-bookings-section">
         <div className="section-container">
-          <div className="my-bookings-lookup-card">
-            <h2>Find your bookings</h2>
-            <p>Use the same email address you entered on your booking request form.</p>
+          <div className="my-bookings-search-card">
+            <h2>Find Your Booking</h2>
+            <p>
+              Use the same email address, phone number, or booking ID you used
+              when making the booking request.
+            </p>
 
-            <form className="my-bookings-lookup-form" onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="booking-email">Email address</label>
-                <input
-                  id="booking-email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
+            <form onSubmit={handleSearch} className="my-bookings-search-form">
+              <input
+                type="text"
+                placeholder="Enter email, phone number, or booking ID"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
 
               <button type="submit" className="primary-btn">
-                View My Bookings
+                Search Booking
               </button>
             </form>
           </div>
 
-          {hasSearched && (
-            <div className="my-bookings-results">
-              <div className="my-bookings-results-header">
-                <div>
-                  <h2>Your bookings</h2>
-                  <p>
-                    Showing {bookings.length} booking
-                    {bookings.length !== 1 ? "s" : ""} for <strong>{email}</strong>
-                  </p>
-                </div>
+          {searched && bookings.length === 0 && (
+            <div className="no-bookings-card">
+              <h3>No bookings found</h3>
+              <p>Please check your details and try again.</p>
+            </div>
+          )}
 
-                <button
-                  type="button"
-                  className="secondary-btn secondary-btn--outline my-bookings-refresh-btn"
-                  onClick={handleRefresh}
-                >
-                  Refresh status
-                </button>
-              </div>
+          {bookings.length > 0 && (
+            <div className="customer-bookings-list">
+              {bookings.map((booking) => (
+                <div className="customer-booking-card" key={booking.id}>
+                  <div className="customer-booking-header">
+                    <div>
+                      <h3>{booking.roomTitle}</h3>
+                      <p>Booking ID: {booking.id}</p>
+                    </div>
 
-              {bookings.length > 0 && (
-                <div className="my-bookings-stats">
-                  <div className="my-bookings-stat pending">
-                    <span>Pending</span>
-                    <strong>{pendingCount}</strong>
+                    <BookingStatusBadge status={booking.status} />
                   </div>
-                  <div className="my-bookings-stat confirmed">
-                    <span>Confirmed</span>
-                    <strong>{confirmedCount}</strong>
+
+                  <div className="customer-booking-details">
+                    <div>
+                      <span>Name</span>
+                      <strong>{booking.customerName}</strong>
+                    </div>
+
+                    <div>
+                      <span>Check-in</span>
+                      <strong>{booking.checkInDate}</strong>
+                    </div>
+
+                    <div>
+                      <span>Check-out</span>
+                      <strong>{booking.checkOutDate}</strong>
+                    </div>
+
+                    <div>
+                      <span>Guests</span>
+                      <strong>{booking.guests}</strong>
+                    </div>
                   </div>
-                  <div className="my-bookings-stat cancelled">
-                    <span>Cancelled</span>
-                    <strong>{cancelledCount}</strong>
+
+                  <div className="customer-booking-note">
+                    {booking.status === "Pending" && (
+                      <p>Your request is still pending. The villa owner will confirm it soon.</p>
+                    )}
+
+                    {booking.status === "Confirmed" && (
+                      <p>Your booking has been confirmed. Please contact the villa owner for final arrival details.</p>
+                    )}
+
+                    {booking.status === "Cancelled" && (
+                      <p>Your booking request has been cancelled. You may contact the villa owner for more information.</p>
+                    )}
                   </div>
                 </div>
-              )}
-
-              <MyBookingsTable bookings={bookings} customerEmail={email} />
-
-              {bookings.length === 0 && (
-                <div className="my-bookings-empty-actions">
-                  <Link to="/book-now" className="primary-btn">
-                    Make a booking request
-                  </Link>
-                </div>
-              )}
+              ))}
             </div>
           )}
         </div>

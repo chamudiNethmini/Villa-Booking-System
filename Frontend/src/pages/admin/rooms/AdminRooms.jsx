@@ -10,38 +10,41 @@ import {
 function AdminRooms() {
   const [rooms, setRooms] = useState([]);
 
-  const loadRooms = () => {
-    setRooms(getRooms());
+  const loadRooms = async () => {
+    const data = await getRooms();
+    setRooms(data);
   };
 
   useEffect(() => {
     loadRooms();
   }, []);
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this room?");
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this room?"
+    );
 
     if (confirmDelete) {
-      deleteRoom(id);
-      loadRooms();
+      await deleteRoom(id);
+      await loadRooms();
     }
   };
 
-  const handleToggleAvailability = (id) => {
-    toggleRoomAvailability(id);
-    loadRooms();
+  const handleToggleAvailability = async (id) => {
+    await toggleRoomAvailability(id);
+    await loadRooms();
   };
 
   return (
     <section className="admin-page">
       <div className="admin-header">
         <div>
-          <span className="section-label">Rooms</span>
-          <h1>Room listings</h1>
+          <span className="section-label">Admin</span>
+          <h1>Room Management</h1>
           <p>Add, edit, delete, and manage villa room availability.</p>
         </div>
 
-        <Link to="/admin/rooms/add" className="primary-btn admin-action-btn">
+        <Link to="/admin/rooms/add" className="primary-btn">
           Add New Room
         </Link>
       </div>
