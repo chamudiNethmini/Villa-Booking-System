@@ -36,12 +36,12 @@ function AdminRooms() {
     <section className="admin-page">
       <div className="admin-header">
         <div>
-          <span className="section-label">Admin</span>
-          <h1>Room Management</h1>
+          <span className="section-label">Rooms</span>
+          <h1>Room listings</h1>
           <p>Add, edit, delete, and manage villa room availability.</p>
         </div>
 
-        <Link to="/admin/rooms/add" className="primary-btn">
+        <Link to="/admin/rooms/add" className="primary-btn admin-action-btn">
           Add New Room
         </Link>
       </div>
