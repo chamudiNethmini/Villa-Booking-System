@@ -1,92 +1,71 @@
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageHero from "../../components/public/PageHero";
+import BookingForm from "../../components/bookings/BookingForm";
+import { addBooking, saveCustomerEmail } from "../../services/bookingService";
 
 function BookNow() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const selectedRoomId = searchParams.get("roomId") || "";
+
+  const handleBookingSubmit = (bookingData) => {
+    addBooking(bookingData);
+    saveCustomerEmail(bookingData.email);
+    navigate(
+      `/my-bookings?email=${encodeURIComponent(bookingData.email)}`
+    );
+  };
+
   return (
     <>
       <PageHero
         label="Booking"
-        title="Reserve your villa stay"
-        description="Complete the form below to request a booking. Our team will confirm availability and get back to you promptly."
+        title="Book your villa stay"
+        description="Send your booking request and our team will contact you soon to confirm availability."
       />
 
-      <section className="section page-section light-section">
+      <section className="section booking-section">
         <div className="section-container">
-          <div className="contact-card booking-form-box">
-            <h2>Booking Request</h2>
-            <p className="form-subtitle">
-              Please provide your details and preferred dates. All fields marked
-              with your information help us prepare the best stay for you.
-            </p>
+          <div className="booking-layout">
+            <div className="booking-info-card">
+              <span className="section-label">How It Works</span>
+              <h2>Simple booking request process</h2>
 
-            <form>
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="booking-name">Full Name</label>
-                  <input
-                    id="booking-name"
-                    type="text"
-                    placeholder="Your full name"
-                  />
+              <div className="booking-steps">
+                <div>
+                  <span>01</span>
+                  <p>Choose your preferred room.</p>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="booking-email">Email Address</label>
-                  <input
-                    id="booking-email"
-                    type="email"
-                    placeholder="you@example.com"
-                  />
-                </div>
-              </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="booking-phone">Phone Number</label>
-                  <input
-                    id="booking-phone"
-                    type="text"
-                    placeholder="+94 7X XXX XXXX"
-                  />
+                <div>
+                  <span>02</span>
+                  <p>Submit your booking details.</p>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="booking-guests">Number of Guests</label>
-                  <input
-                    id="booking-guests"
-                    type="number"
-                    placeholder="2"
-                    min="1"
-                  />
+
+                <div>
+                  <span>03</span>
+                  <p>Villa owner confirms availability.</p>
+                </div>
+
+                <div>
+                  <span>04</span>
+                  <p>Track your status anytime in My Bookings.</p>
                 </div>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="booking-checkin">Check-in Date</label>
-                  <input id="booking-checkin" type="date" />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="booking-checkout">Check-out Date</label>
-                  <input id="booking-checkout" type="date" />
-                </div>
-              </div>
+              <p className="booking-note">
+                This is a booking request only. Final confirmation will be shared
+                by phone, email, or WhatsApp.
+              </p>
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="booking-message">Special Requests</label>
-                <textarea
-                  id="booking-message"
-                  placeholder="Any special requirements or questions..."
-                  rows="4"
-                ></textarea>
-              </div>
-
-              <button type="submit" className="primary-btn form-btn">
-                Submit Booking Request
-              </button>
-            </form>
-
-            <p className="booking-note">
-              You can also reach us directly via{" "}
-              <span>WhatsApp</span> for faster responses.
-            </p>
+            <div className="booking-form-card">
+              <h2>Booking Request Form</h2>
+              <BookingForm
+                selectedRoomId={selectedRoomId}
+                onSubmit={handleBookingSubmit}
+              />
+            </div>
           </div>
         </div>
       </section>
