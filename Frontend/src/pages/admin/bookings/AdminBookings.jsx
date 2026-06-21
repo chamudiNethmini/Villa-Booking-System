@@ -48,29 +48,29 @@ function AdminBookings() {
     <section className="admin-page">
       <div className="admin-header">
         <div>
-          <span className="section-label">Admin</span>
-          <h1>Booking Management</h1>
+          <span className="section-label">Bookings</span>
+          <h1>Booking requests</h1>
           <p>View booking requests and update booking status.</p>
         </div>
       </div>
 
-      <div className="booking-stats-grid">
-        <div className="booking-stat-card">
+      <div className="admin-stat-grid">
+        <div className="admin-stat-card admin-stat-card--total">
           <span>Total</span>
           <h3>{totalBookings}</h3>
         </div>
 
-        <div className="booking-stat-card">
+        <div className="admin-stat-card admin-stat-card--pending">
           <span>Pending</span>
           <h3>{pendingBookings}</h3>
         </div>
 
-        <div className="booking-stat-card">
+        <div className="admin-stat-card admin-stat-card--confirmed">
           <span>Confirmed</span>
           <h3>{confirmedBookings}</h3>
         </div>
 
-        <div className="booking-stat-card">
+        <div className="admin-stat-card admin-stat-card--cancelled">
           <span>Cancelled</span>
           <h3>{cancelledBookings}</h3>
         </div>

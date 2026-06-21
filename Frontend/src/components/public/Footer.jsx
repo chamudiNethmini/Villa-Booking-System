@@ -31,6 +31,9 @@ function Footer() {
 
       <div className="footer-bottom">
         <p>© 2026 CoastalStay Villa. All rights reserved.</p>
+        <Link to="/admin/login" className="footer-admin-btn">
+          Admin Login
+        </Link>
       </div>
     </footer>
   );

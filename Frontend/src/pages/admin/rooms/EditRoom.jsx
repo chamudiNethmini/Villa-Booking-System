@@ -28,8 +28,8 @@ function EditRoom() {
   return (
     <section className="admin-page">
       <div className="admin-form-container">
-        <span className="section-label">Admin</span>
-        <h1>Edit Room</h1>
+        <span className="section-label">Rooms</span>
+        <h1>Edit room</h1>
         <p>Update room details and availability.</p>
 
         <RoomForm
