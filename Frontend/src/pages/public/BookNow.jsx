@@ -1,18 +1,19 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageHero from "../../components/public/PageHero";
 import BookingForm from "../../components/bookings/BookingForm";
-import { addBooking } from "../../services/bookingService";
+import { addBooking, saveCustomerEmail } from "../../services/bookingService";
 
 function BookNow() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedRoomId = searchParams.get("roomId") || "";
 
   const handleBookingSubmit = async (bookingData) => {
     try {
-      const newBooking = await addBooking(bookingData);
-
-      alert(
-        `Booking request submitted successfully.\nYour Booking ID is: ${newBooking.id}\nYou can check the status in My Bookings.`
+      await addBooking(bookingData);
+      saveCustomerEmail(bookingData.email);
+      navigate(
+        `/my-bookings?email=${encodeURIComponent(bookingData.email)}`
       );
     } catch (error) {
       alert(error.message);

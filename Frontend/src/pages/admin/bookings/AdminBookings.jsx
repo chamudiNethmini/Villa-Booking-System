@@ -10,8 +10,12 @@ function AdminBookings() {
   const [bookings, setBookings] = useState([]);
 
   const loadBookings = async () => {
-    const data = await getBookings();
-    setBookings(data);
+    try {
+      const data = await getBookings();
+      setBookings(data);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   useEffect(() => {
@@ -19,8 +23,12 @@ function AdminBookings() {
   }, []);
 
   const handleStatusChange = async (id, status) => {
-    await updateBookingStatus(id, status);
-    await loadBookings();
+    try {
+      await updateBookingStatus(id, status);
+      await loadBookings();
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -29,8 +37,12 @@ function AdminBookings() {
     );
 
     if (confirmDelete) {
-      await deleteBooking(id);
-      await loadBookings();
+      try {
+        await deleteBooking(id);
+        await loadBookings();
+      } catch (error) {
+        alert(error.message);
+      }
     }
   };
 

@@ -17,8 +17,12 @@ function AdminDashboard() {
 
   useEffect(() => {
     const loadStats = async () => {
-      const data = await getDashboardStats();
-      setStats(data);
+      try {
+        const data = await getDashboardStats();
+        setStats(data);
+      } catch (error) {
+        alert(error.message);
+      }
     };
 
     loadStats();

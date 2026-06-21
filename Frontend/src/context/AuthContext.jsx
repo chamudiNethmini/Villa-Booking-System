@@ -13,12 +13,18 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const savedAdmin = getCurrentAdmin();
-    setAdmin(savedAdmin);
+
+    if (savedAdmin?.token) {
+      setAdmin(savedAdmin);
+    } else if (savedAdmin) {
+      logoutAdmin();
+    }
+
     setLoading(false);
   }, []);
 
-  const login = (email, password) => {
-    const adminData = loginAdmin(email, password);
+  const login = async (email, password) => {
+    const adminData = await loginAdmin(email, password);
     setAdmin(adminData);
     return adminData;
   };
@@ -28,7 +34,7 @@ export function AuthProvider({ children }) {
     setAdmin(null);
   };
 
-  const isAuthenticated = Boolean(admin);
+  const isAuthenticated = Boolean(admin?.token);
 
   return (
     <AuthContext.Provider

@@ -1,10 +1,35 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import BookingStatusBadge from "../../../components/bookings/BookingStatusBadge";
 import { getBookingById } from "../../../services/bookingService";
 
 function BookingDetails() {
   const { id } = useParams();
-  const booking = getBookingById(id);
+  const [booking, setBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadBooking = async () => {
+      try {
+        const data = await getBookingById(id);
+        setBooking(data);
+      } catch {
+        setBooking(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBooking();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <section className="admin-page">
+        <p>Loading booking...</p>
+      </section>
+    );
+  }
 
   if (!booking) {
     return (

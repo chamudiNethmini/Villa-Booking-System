@@ -1,4 +1,7 @@
 import { API_BASE_URL } from "../utils/api";
+import { getAuthHeaders } from "./authService";
+
+const CUSTOMER_EMAIL_KEY = "villa_customer_email";
 
 const formatDateOnly = (dateValue) => {
   if (!dateValue) return "";
@@ -17,7 +20,9 @@ const normalizeBooking = (booking) => ({
       : booking.roomId,
   roomTitle:
     booking.roomTitle ||
-    (typeof booking.roomId === "object" ? booking.roomId?.title : "Selected Room"),
+    (typeof booking.roomId === "object"
+      ? booking.roomId?.title
+      : "Selected Room"),
   checkInDate: formatDateOnly(booking.checkInDate),
   checkOutDate: formatDateOnly(booking.checkOutDate),
   guests: Number(booking.guests),
@@ -37,18 +42,31 @@ const handleResponse = async (response) => {
   return data;
 };
 
+// Admin - protected
 export const getBookings = async () => {
-  const response = await fetch(`${API_BASE_URL}/bookings`);
+  const response = await fetch(`${API_BASE_URL}/bookings`, {
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+
   const data = await handleResponse(response);
   return data.map(normalizeBooking);
 };
 
+// Admin - protected
 export const getBookingById = async (id) => {
-  const response = await fetch(`${API_BASE_URL}/bookings/${id}`);
+  const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+
   const data = await handleResponse(response);
   return normalizeBooking(data);
 };
 
+// Public - customer can search booking status
 export const getCustomerBookings = async (searchValue) => {
   const response = await fetch(
     `${API_BASE_URL}/bookings/customer/search?search=${encodeURIComponent(
@@ -60,6 +78,7 @@ export const getCustomerBookings = async (searchValue) => {
   return data.map(normalizeBooking);
 };
 
+// Public - customer can submit booking request
 export const addBooking = async (bookingData) => {
   const formattedBooking = {
     customerName: bookingData.customerName,
@@ -84,11 +103,13 @@ export const addBooking = async (bookingData) => {
   return normalizeBooking(data);
 };
 
+// Admin - protected
 export const updateBookingStatus = async (id, status) => {
   const response = await fetch(`${API_BASE_URL}/bookings/${id}/status`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ status }),
   });
@@ -97,10 +118,23 @@ export const updateBookingStatus = async (id, status) => {
   return normalizeBooking(data);
 };
 
+// Admin - protected
 export const deleteBooking = async (id) => {
   const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
     method: "DELETE",
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
 
   return handleResponse(response);
+};
+
+export const saveCustomerEmail = (email) => {
+  if (!email) return;
+  localStorage.setItem(CUSTOMER_EMAIL_KEY, email.trim().toLowerCase());
+};
+
+export const getCustomerEmail = () => {
+  return localStorage.getItem(CUSTOMER_EMAIL_KEY) || "";
 };

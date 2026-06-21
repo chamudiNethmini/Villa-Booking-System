@@ -1,9 +1,36 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getRoomById } from "../../services/roomService";
 
 function RoomDetails() {
   const { id } = useParams();
-  const room = getRoomById(id);
+  const [room, setRoom] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadRoom = async () => {
+      try {
+        const data = await getRoomById(id);
+        setRoom(data);
+      } catch {
+        setRoom(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRoom();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <section className="section page-section">
+        <div className="section-container">
+          <p>Loading room...</p>
+        </div>
+      </section>
+    );
+  }
 
   if (!room) {
     return (
@@ -65,7 +92,7 @@ function RoomDetails() {
               </Link>
 
               <Link to={`/book-now?roomId=${room.id}`} className="primary-btn">
-                 Book This Room
+                Book This Room
               </Link>
             </div>
           </div>
