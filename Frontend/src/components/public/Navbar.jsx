@@ -25,6 +25,7 @@ function Navbar() {
           <NavLink to="/facilities" onClick={closeMenu}>Facilities</NavLink>
           <NavLink to="/gallery" onClick={closeMenu}>Gallery</NavLink>
           <NavLink to="/contact" onClick={closeMenu}>Contact</NavLink>
+          <NavLink to="/rooms" onClick={closeMenu}>Rooms</NavLink>
           <NavLink to="/book-now" className="nav-book-btn" onClick={closeMenu}>
             Book Now
           </NavLink>
