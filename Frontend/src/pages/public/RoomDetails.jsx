@@ -64,8 +64,8 @@ function RoomDetails() {
                 Back to Rooms
               </Link>
 
-              <Link to="/book-now" className="primary-btn">
-                Book This Room
+              <Link to={`/book-now?roomId=${room.id}`} className="primary-btn">
+                 Book This Room
               </Link>
             </div>
           </div>
