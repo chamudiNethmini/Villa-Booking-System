@@ -1,31 +1,54 @@
+import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import BookingStatusBadge from "../../components/bookings/BookingStatusBadge";
 import {
-  getBookingById,
+  getCustomerBookings,
   getCustomerEmail,
 } from "../../services/bookingService";
 
 function MyBookingDetails() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const booking = getBookingById(id);
+  const [booking, setBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const customerEmail =
-    searchParams.get("email") || getCustomerEmail();
+  const customerSearch =
+    searchParams.get("email") || getCustomerEmail() || id;
 
-  const isOwner =
-    booking &&
-    customerEmail &&
-    booking.email.trim().toLowerCase() === customerEmail.trim().toLowerCase();
+  useEffect(() => {
+    const loadBooking = async () => {
+      try {
+        const bookings = await getCustomerBookings(customerSearch);
+        const match = bookings.find((item) => item.id === id);
+        setBooking(match || null);
+      } catch {
+        setBooking(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!booking || !isOwner) {
+    loadBooking();
+  }, [customerSearch, id]);
+
+  if (loading) {
+    return (
+      <section className="section page-section my-bookings-section">
+        <div className="section-container">
+          <p>Loading booking...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!booking) {
     return (
       <section className="section page-section my-bookings-section">
         <div className="section-container">
           <div className="booking-details-card">
             <h1>Booking not found</h1>
             <p>
-              This booking does not exist or is not linked to your email address.
+              This booking does not exist or is not linked to your search details.
             </p>
             <Link to="/my-bookings" className="primary-btn small-btn">
               Back to My Bookings
@@ -36,7 +59,7 @@ function MyBookingDetails() {
     );
   }
 
-  const emailQuery = encodeURIComponent(customerEmail);
+  const searchQuery = encodeURIComponent(customerSearch);
 
   return (
     <section className="section page-section my-bookings-section">
@@ -113,7 +136,7 @@ function MyBookingDetails() {
 
           <div className="my-booking-details-actions">
             <Link
-              to={`/my-bookings?email=${emailQuery}`}
+              to={`/my-bookings?email=${searchQuery}`}
               className="secondary-outline-btn"
             >
               Back to My Bookings

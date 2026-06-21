@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import BookingStatusBadge from "./BookingStatusBadge";
 
-function MyBookingsTable({ bookings, customerEmail }) {
-  const emailQuery = encodeURIComponent(customerEmail);
+function MyBookingsTable({ bookings, searchValue }) {
+  const searchQuery = encodeURIComponent(searchValue);
 
   return (
     <div className="my-bookings-table-wrapper">
@@ -49,7 +49,7 @@ function MyBookingsTable({ bookings, customerEmail }) {
 
                 <td>
                   <Link
-                    to={`/my-bookings/${booking.id}?email=${emailQuery}`}
+                    to={`/my-bookings/${booking.id}?email=${searchQuery}`}
                     className="edit-btn"
                   >
                     View

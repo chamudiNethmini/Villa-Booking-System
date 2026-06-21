@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "../utils/api";
+import { getAuthHeaders } from "./authService";
 
 const normalizeRoom = (room) => ({
   id: room._id || room.id,
@@ -52,6 +53,7 @@ export const addRoom = async (roomData) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
     },
     body: JSON.stringify(formattedRoom),
   });
@@ -76,6 +78,7 @@ export const updateRoom = async (id, updatedData) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeaders(),
     },
     body: JSON.stringify(formattedRoom),
   });
@@ -87,6 +90,9 @@ export const updateRoom = async (id, updatedData) => {
 export const deleteRoom = async (id) => {
   const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
     method: "DELETE",
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
 
   return handleResponse(response);

@@ -6,13 +6,15 @@ import {
   updateRoom,
   deleteRoom,
 } from "../controllers/roomController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.get("/", getRooms);
 router.get("/:id", getRoomById);
-router.post("/", createRoom);
-router.put("/:id", updateRoom);
-router.delete("/:id", deleteRoom);
+
+router.post("/", protect, createRoom);
+router.put("/:id", protect, updateRoom);
+router.delete("/:id", protect, deleteRoom);
 
 export default router;

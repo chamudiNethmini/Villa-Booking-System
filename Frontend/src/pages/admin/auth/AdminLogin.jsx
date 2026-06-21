@@ -24,7 +24,7 @@ function AdminLogin() {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
@@ -33,7 +33,7 @@ function AdminLogin() {
     }
 
     try {
-      login(formData.email, formData.password);
+      await login(formData.email, formData.password);
       navigate("/admin/dashboard");
     } catch (error) {
       setError(error.message);

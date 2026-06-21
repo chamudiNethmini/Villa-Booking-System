@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import RoomForm from "../../../components/rooms/RoomForm";
 import { getRoomById, updateRoom } from "../../../services/roomService";
@@ -5,8 +6,41 @@ import { getRoomById, updateRoom } from "../../../services/roomService";
 function EditRoom() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [room, setRoom] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const room = getRoomById(id);
+  useEffect(() => {
+    const loadRoom = async () => {
+      try {
+        const data = await getRoomById(id);
+        setRoom(data);
+      } catch {
+        setRoom(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRoom();
+  }, [id]);
+
+  const handleUpdateRoom = async (roomData) => {
+    try {
+      await updateRoom(id, roomData);
+      alert("Room updated successfully");
+      navigate("/admin/rooms");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="admin-page">
+        <p>Loading room...</p>
+      </section>
+    );
+  }
 
   if (!room) {
     return (
@@ -18,12 +52,6 @@ function EditRoom() {
       </section>
     );
   }
-
-  const handleUpdateRoom = (roomData) => {
-    updateRoom(id, roomData);
-    alert("Room updated successfully");
-    navigate("/admin/rooms");
-  };
 
   return (
     <section className="admin-page">

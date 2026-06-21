@@ -11,8 +11,12 @@ function AdminRooms() {
   const [rooms, setRooms] = useState([]);
 
   const loadRooms = async () => {
-    const data = await getRooms();
-    setRooms(data);
+    try {
+      const data = await getRooms();
+      setRooms(data);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   useEffect(() => {
@@ -25,14 +29,22 @@ function AdminRooms() {
     );
 
     if (confirmDelete) {
-      await deleteRoom(id);
-      await loadRooms();
+      try {
+        await deleteRoom(id);
+        await loadRooms();
+      } catch (error) {
+        alert(error.message);
+      }
     }
   };
 
   const handleToggleAvailability = async (id) => {
-    await toggleRoomAvailability(id);
-    await loadRooms();
+    try {
+      await toggleRoomAvailability(id);
+      await loadRooms();
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (

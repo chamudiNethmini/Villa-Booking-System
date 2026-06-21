@@ -7,6 +7,7 @@ import Gallery from "../pages/public/Gallery";
 import Contact from "../pages/public/Contact";
 import BookNow from "../pages/public/BookNow";
 import MyBookings from "../pages/public/MyBookings";
+import MyBookingDetails from "../pages/public/MyBookingDetails";
 
 import Rooms from "../pages/public/Rooms";
 import RoomDetails from "../pages/public/RoomDetails";
@@ -36,6 +37,7 @@ function AppRoutes() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/book-now" element={<BookNow />} />
       <Route path="/my-bookings" element={<MyBookings />} />
+      <Route path="/my-bookings/:id" element={<MyBookingDetails />} />
 
       {/* Admin Login */}
       <Route path="/admin/login" element={<AdminLogin />} />

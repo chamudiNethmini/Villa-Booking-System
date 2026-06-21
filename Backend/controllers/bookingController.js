@@ -140,11 +140,13 @@ export const getCustomerBookings = async (req, res) => {
       });
     }
 
+    const escapedSearch = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
     const bookings = await Booking.find({
       $or: [
-        { email: search.toLowerCase() },
-        { phone: search },
-        { _id: search.match(/^[0-9a-fA-F]{24}$/) ? search : null },
+        { email: { $regex: new RegExp(`^${escapedSearch}$`, "i") } },
+        { phone: search.trim() },
+        ...(search.match(/^[0-9a-fA-F]{24}$/) ? [{ _id: search }] : []),
       ],
     }).sort({ createdAt: -1 });
 
