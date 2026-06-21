@@ -5,9 +5,21 @@ import { getRooms } from "../../services/roomService";
 
 function Rooms() {
   const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setRooms(getRooms());
+    const loadRooms = async () => {
+      try {
+        const data = await getRooms();
+        setRooms(data);
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRooms();
   }, []);
 
   return (
@@ -20,11 +32,15 @@ function Rooms() {
 
       <section className="section">
         <div className="section-container">
-          <div className="rooms-grid">
-            {rooms.map((room) => (
-              <RoomCard key={room.id} room={room} />
-            ))}
-          </div>
+          {loading ? (
+            <p>Loading rooms...</p>
+          ) : (
+            <div className="rooms-grid">
+              {rooms.map((room) => (
+                <RoomCard key={room.id} room={room} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

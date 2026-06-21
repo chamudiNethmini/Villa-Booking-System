@@ -1,9 +1,9 @@
 import { getRooms } from "./roomService";
 import { getBookings } from "./bookingService";
 
-export const getDashboardStats = () => {
-  const rooms = getRooms();
-  const bookings = getBookings();
+export const getDashboardStats = async () => {
+  const rooms = await getRooms();
+  const bookings = await getBookings();
 
   const totalRooms = rooms.length;
   const availableRooms = rooms.filter((room) => room.isAvailable).length;

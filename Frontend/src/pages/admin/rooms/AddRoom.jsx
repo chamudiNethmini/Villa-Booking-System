@@ -5,17 +5,21 @@ import { addRoom } from "../../../services/roomService";
 function AddRoom() {
   const navigate = useNavigate();
 
-  const handleAddRoom = (roomData) => {
-    addRoom(roomData);
-    alert("Room added successfully");
-    navigate("/admin/rooms");
+  const handleAddRoom = async (roomData) => {
+    try {
+      await addRoom(roomData);
+      alert("Room added successfully");
+      navigate("/admin/rooms");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
     <section className="admin-page">
       <div className="admin-form-container">
-        <span className="section-label">Rooms</span>
-        <h1>Add new room</h1>
+        <span className="section-label">Admin</span>
+        <h1>Add New Room</h1>
         <p>Add room details that will be visible to villa visitors.</p>
 
         <RoomForm onSubmit={handleAddRoom} buttonText="Add Room" />

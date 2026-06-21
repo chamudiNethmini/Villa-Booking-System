@@ -1,88 +1,106 @@
-import { getRoomById } from "./roomService";
+import { API_BASE_URL } from "../utils/api";
 
-const STORAGE_KEY = "villa_bookings";
-const CUSTOMER_EMAIL_KEY = "villa_customer_email";
+const formatDateOnly = (dateValue) => {
+  if (!dateValue) return "";
+  return new Date(dateValue).toISOString().split("T")[0];
+};
 
-const normalizeEmail = (email) => email.trim().toLowerCase();
+const normalizeBooking = (booking) => ({
+  id: booking._id || booking.id,
+  _id: booking._id || booking.id,
+  customerName: booking.customerName,
+  email: booking.email,
+  phone: booking.phone,
+  roomId:
+    typeof booking.roomId === "object"
+      ? booking.roomId?._id
+      : booking.roomId,
+  roomTitle:
+    booking.roomTitle ||
+    (typeof booking.roomId === "object" ? booking.roomId?.title : "Selected Room"),
+  checkInDate: formatDateOnly(booking.checkInDate),
+  checkOutDate: formatDateOnly(booking.checkOutDate),
+  guests: Number(booking.guests),
+  message: booking.message || "",
+  status: booking.status,
+  createdAt: booking.createdAt,
+  updatedAt: booking.updatedAt,
+});
 
-const getStoredBookings = () => {
-  const bookings = localStorage.getItem(STORAGE_KEY);
+const handleResponse = async (response) => {
+  const data = await response.json();
 
-  if (!bookings) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-    return [];
+  if (!response.ok) {
+    throw new Error(data.message || "Something went wrong");
   }
 
-  return JSON.parse(bookings);
+  return data;
 };
 
-const saveBookings = (bookings) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
+export const getBookings = async () => {
+  const response = await fetch(`${API_BASE_URL}/bookings`);
+  const data = await handleResponse(response);
+  return data.map(normalizeBooking);
 };
 
-export const getBookings = () => {
-  return getStoredBookings();
+export const getBookingById = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/bookings/${id}`);
+  const data = await handleResponse(response);
+  return normalizeBooking(data);
 };
 
-export const getBookingById = (id) => {
-  const bookings = getStoredBookings();
-  return bookings.find((booking) => booking.id === id);
-};
-
-export const getBookingsByEmail = (email) => {
-  if (!email) return [];
-
-  const normalized = normalizeEmail(email);
-
-  return getStoredBookings().filter(
-    (booking) => normalizeEmail(booking.email) === normalized
+export const getCustomerBookings = async (searchValue) => {
+  const response = await fetch(
+    `${API_BASE_URL}/bookings/customer/search?search=${encodeURIComponent(
+      searchValue
+    )}`
   );
+
+  const data = await handleResponse(response);
+  return data.map(normalizeBooking);
 };
 
-export const saveCustomerEmail = (email) => {
-  if (!email) return;
-  localStorage.setItem(CUSTOMER_EMAIL_KEY, normalizeEmail(email));
-};
-
-export const getCustomerEmail = () => {
-  return localStorage.getItem(CUSTOMER_EMAIL_KEY) || "";
-};
-
-export const addBooking = (bookingData) => {
-  const bookings = getStoredBookings();
-  const selectedRoom = getRoomById(bookingData.roomId);
-
-  const newBooking = {
-    id: Date.now().toString(),
+export const addBooking = async (bookingData) => {
+  const formattedBooking = {
     customerName: bookingData.customerName,
     email: bookingData.email,
     phone: bookingData.phone,
     roomId: bookingData.roomId,
-    roomTitle: selectedRoom ? selectedRoom.title : "Selected Room",
     checkInDate: bookingData.checkInDate,
     checkOutDate: bookingData.checkOutDate,
     guests: Number(bookingData.guests),
     message: bookingData.message,
-    status: "Pending",
-    createdAt: new Date().toISOString(),
   };
 
-  saveBookings([newBooking, ...bookings]);
-  return newBooking;
+  const response = await fetch(`${API_BASE_URL}/bookings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formattedBooking),
+  });
+
+  const data = await handleResponse(response);
+  return normalizeBooking(data);
 };
 
-export const updateBookingStatus = (id, status) => {
-  const bookings = getStoredBookings();
+export const updateBookingStatus = async (id, status) => {
+  const response = await fetch(`${API_BASE_URL}/bookings/${id}/status`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
 
-  const updatedBookings = bookings.map((booking) =>
-    booking.id === id ? { ...booking, status } : booking
-  );
-
-  saveBookings(updatedBookings);
+  const data = await handleResponse(response);
+  return normalizeBooking(data);
 };
 
-export const deleteBooking = (id) => {
-  const bookings = getStoredBookings();
-  const filteredBookings = bookings.filter((booking) => booking.id !== id);
-  saveBookings(filteredBookings);
+export const deleteBooking = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
+    method: "DELETE",
+  });
+
+  return handleResponse(response);
 };

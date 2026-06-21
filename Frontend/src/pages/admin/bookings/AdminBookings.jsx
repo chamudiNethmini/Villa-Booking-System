@@ -9,27 +9,28 @@ import {
 function AdminBookings() {
   const [bookings, setBookings] = useState([]);
 
-  const loadBookings = () => {
-    setBookings(getBookings());
+  const loadBookings = async () => {
+    const data = await getBookings();
+    setBookings(data);
   };
 
   useEffect(() => {
     loadBookings();
   }, []);
 
-  const handleStatusChange = (id, status) => {
-    updateBookingStatus(id, status);
-    loadBookings();
+  const handleStatusChange = async (id, status) => {
+    await updateBookingStatus(id, status);
+    await loadBookings();
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this booking request?"
     );
 
     if (confirmDelete) {
-      deleteBooking(id);
-      loadBookings();
+      await deleteBooking(id);
+      await loadBookings();
     }
   };
 
@@ -48,29 +49,29 @@ function AdminBookings() {
     <section className="admin-page">
       <div className="admin-header">
         <div>
-          <span className="section-label">Bookings</span>
-          <h1>Booking requests</h1>
+          <span className="section-label">Admin</span>
+          <h1>Booking Management</h1>
           <p>View booking requests and update booking status.</p>
         </div>
       </div>
 
-      <div className="admin-stat-grid">
-        <div className="admin-stat-card admin-stat-card--total">
+      <div className="booking-stats-grid">
+        <div className="booking-stat-card">
           <span>Total</span>
           <h3>{totalBookings}</h3>
         </div>
 
-        <div className="admin-stat-card admin-stat-card--pending">
+        <div className="booking-stat-card">
           <span>Pending</span>
           <h3>{pendingBookings}</h3>
         </div>
 
-        <div className="admin-stat-card admin-stat-card--confirmed">
+        <div className="booking-stat-card">
           <span>Confirmed</span>
           <h3>{confirmedBookings}</h3>
         </div>
 
-        <div className="admin-stat-card admin-stat-card--cancelled">
+        <div className="booking-stat-card">
           <span>Cancelled</span>
           <h3>{cancelledBookings}</h3>
         </div>

@@ -1,73 +1,43 @@
-const STORAGE_KEY = "villa_rooms";
+import { API_BASE_URL } from "../utils/api";
 
-const defaultRooms = [
-  {
-    id: "1",
-    title: "Deluxe Double Room",
-    description:
-      "A cozy double room with a peaceful interior, comfortable bed, and basic facilities for a relaxing stay.",
-    price: 14500,
-    capacity: 2,
-    image:
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80",
-    facilities: ["Free Wi-Fi", "Air Conditioning", "Private Bathroom"],
-    isAvailable: true,
-  },
-  {
-    id: "2",
-    title: "Family Room",
-    description:
-      "A spacious room suitable for small families with comfortable bedding and a calm villa atmosphere.",
-    price: 22000,
-    capacity: 4,
-    image:
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80",
-    facilities: ["Free Wi-Fi", "Kitchen Access", "Garden View"],
-    isAvailable: true,
-  },
-  {
-    id: "3",
-    title: "Standard Room",
-    description:
-      "A simple and clean room for budget-friendly travelers who want comfort near the beach.",
-    price: 10500,
-    capacity: 2,
-    image:
-      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=900&q=80",
-    facilities: ["Free Wi-Fi", "Fan", "Shared Kitchen"],
-    isAvailable: false,
-  },
-];
+const normalizeRoom = (room) => ({
+  id: room._id || room.id,
+  _id: room._id || room.id,
+  title: room.title,
+  description: room.description,
+  price: Number(room.price),
+  capacity: Number(room.capacity),
+  image: room.image,
+  facilities: room.facilities || [],
+  isAvailable: room.isAvailable,
+  createdAt: room.createdAt,
+  updatedAt: room.updatedAt,
+});
 
-const getStoredRooms = () => {
-  const rooms = localStorage.getItem(STORAGE_KEY);
+const handleResponse = async (response) => {
+  const data = await response.json();
 
-  if (!rooms) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultRooms));
-    return defaultRooms;
+  if (!response.ok) {
+    throw new Error(data.message || "Something went wrong");
   }
 
-  return JSON.parse(rooms);
+  return data;
 };
 
-const saveRooms = (rooms) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(rooms));
+export const getRooms = async () => {
+  const response = await fetch(`${API_BASE_URL}/rooms`);
+  const data = await handleResponse(response);
+  return data.map(normalizeRoom);
 };
 
-export const getRooms = () => {
-  return getStoredRooms();
+export const getRoomById = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/rooms/${id}`);
+  const data = await handleResponse(response);
+  return normalizeRoom(data);
 };
 
-export const getRoomById = (id) => {
-  const rooms = getStoredRooms();
-  return rooms.find((room) => room.id === id);
-};
-
-export const addRoom = (roomData) => {
-  const rooms = getStoredRooms();
-
-  const newRoom = {
-    id: Date.now().toString(),
+export const addRoom = async (roomData) => {
+  const formattedRoom = {
     ...roomData,
     price: Number(roomData.price),
     capacity: Number(roomData.capacity),
@@ -78,44 +48,57 @@ export const addRoom = (roomData) => {
     isAvailable: Boolean(roomData.isAvailable),
   };
 
-  saveRooms([...rooms, newRoom]);
-  return newRoom;
+  const response = await fetch(`${API_BASE_URL}/rooms`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formattedRoom),
+  });
+
+  const data = await handleResponse(response);
+  return normalizeRoom(data);
 };
 
-export const updateRoom = (id, updatedData) => {
-  const rooms = getStoredRooms();
+export const updateRoom = async (id, updatedData) => {
+  const formattedRoom = {
+    ...updatedData,
+    price: Number(updatedData.price),
+    capacity: Number(updatedData.capacity),
+    facilities:
+      typeof updatedData.facilities === "string"
+        ? updatedData.facilities.split(",").map((item) => item.trim())
+        : updatedData.facilities,
+    isAvailable: Boolean(updatedData.isAvailable),
+  };
 
-  const updatedRooms = rooms.map((room) =>
-    room.id === id
-      ? {
-          ...room,
-          ...updatedData,
-          price: Number(updatedData.price),
-          capacity: Number(updatedData.capacity),
-          facilities:
-            typeof updatedData.facilities === "string"
-              ? updatedData.facilities.split(",").map((item) => item.trim())
-              : updatedData.facilities,
-          isAvailable: Boolean(updatedData.isAvailable),
-        }
-      : room
-  );
+  const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formattedRoom),
+  });
 
-  saveRooms(updatedRooms);
+  const data = await handleResponse(response);
+  return normalizeRoom(data);
 };
 
-export const deleteRoom = (id) => {
-  const rooms = getStoredRooms();
-  const filteredRooms = rooms.filter((room) => room.id !== id);
-  saveRooms(filteredRooms);
+export const deleteRoom = async (id) => {
+  const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
+    method: "DELETE",
+  });
+
+  return handleResponse(response);
 };
 
-export const toggleRoomAvailability = (id) => {
-  const rooms = getStoredRooms();
+export const toggleRoomAvailability = async (id) => {
+  const room = await getRoomById(id);
 
-  const updatedRooms = rooms.map((room) =>
-    room.id === id ? { ...room, isAvailable: !room.isAvailable } : room
-  );
+  const updatedRoom = {
+    ...room,
+    isAvailable: !room.isAvailable,
+  };
 
-  saveRooms(updatedRooms);
+  return updateRoom(id, updatedRoom);
 };

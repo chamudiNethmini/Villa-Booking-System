@@ -16,7 +16,12 @@ function BookingForm({ selectedRoomId = "", onSubmit }) {
   });
 
   useEffect(() => {
-    setRooms(getRooms());
+    const loadRooms = async () => {
+      const data = await getRooms();
+      setRooms(data);
+    };
+
+    loadRooms();
   }, []);
 
   useEffect(() => {
@@ -64,12 +69,12 @@ function BookingForm({ selectedRoomId = "", onSubmit }) {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    onSubmit(formData);
+    await onSubmit(formData);
 
     setFormData({
       customerName: "",
