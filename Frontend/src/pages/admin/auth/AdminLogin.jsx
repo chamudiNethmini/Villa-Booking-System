@@ -79,14 +79,7 @@ function AdminLogin() {
           </button>
         </form>
 
-        <div className="demo-login-box">
-          <p>
-            <strong>Demo Email:</strong> admin@villa.com
-          </p>
-          <p>
-            <strong>Demo Password:</strong> admin123
-          </p>
-        </div>
+        
       </div>
     </section>
   );
